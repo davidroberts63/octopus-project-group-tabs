@@ -1,0 +1,13 @@
+{
+	"manifest_version": 2,
+	"name": "Octopus Deploy Project Group 'tabs'",
+	"description": "Shows the project groups as tabs along the top for quick viewing.",
+
+	"version": "0.0.1",
+	"content_scripts":[
+	{
+		"matches": ["http://*/app"],
+		"js": ["myscript.js"],
+		"run_at": "document_end"
+	}]
+}
