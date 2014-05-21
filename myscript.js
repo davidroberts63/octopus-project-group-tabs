@@ -24,9 +24,9 @@ var octopusGrouping = {
 	{
 		var item = document.createElement('li');
 		item.id = this.pillId(groupName);
-		
+
 		var pill = document.createElement('a');
-		pill.innerText = groupName;
+		pill.innerHTML = '<h3 class="no-border no-margin">' + groupName + "</h3>";
 		pill.addEventListener('click', this.changeGrouping);
 		pill.setAttribute('grouping-id', this.groupingId(groupName));
 		pill.setAttribute('style', 'cursor: pointer !important;');
@@ -38,7 +38,7 @@ var octopusGrouping = {
 
 	changeGrouping: function (event)
 	{
-		var selectedGroupId = event.target.getAttribute('grouping-id');
+		var selectedGroupId = event.target.parentNode.getAttribute('grouping-id');
 		
 		console.info("Change grouping for " + selectedGroupId);
 
@@ -82,11 +82,13 @@ var octopusGrouping = {
 				
 				console.log("Active pill for all");
 				document.getElementById('all-grouping-pill').setAttribute('class', 'active');
+				octopusGrouping.toggleGroupHeaders(true);
 
 			} else {
 
 				console.log("Inactive pill for all");
 				document.getElementById('all-grouping-pill').setAttribute('class', '');
+				octopusGrouping.toggleGroupHeaders(false);
 
 			}
 		}
@@ -118,6 +120,29 @@ var octopusGrouping = {
 			var subtree = this.findNodeByClassName(node.childNodes, className);
 			if (subtree) return subtree;
 		}
+	},
+
+	toggleGroupHeaders: function(display)
+	{
+		var fastboard = document.getElementsByTagName('FASTBOARD')[0];
+		var groupHeaders = fastboard.getElementsByTagName('H3');
+
+		for(var i = 0; i < groupHeaders.length; i++) {
+
+			var header = groupHeaders[i];
+			console.log(header.parentNode);
+			if (display) {
+
+				console.log('Toggle ' + header.parentNode.id + ' to visible.');
+				header.style.display = 'block';
+
+			} else {
+
+				console.log('Toggle ' + header.parentNode.id + ' to hidden.');
+				header.style.display = 'none';
+
+			}
+		}
 	}
 }
 
@@ -128,10 +153,10 @@ function start()
 	var body = document.getElementById("body");
 
 	octopusGrouping.tabsContainer = document.createElement("ul");
-	octopusGrouping.tabsContainer.id = "group-nav";
-	octopusGrouping.tabsContainer.setAttribute("class", "nav nav-pills nav-inline");
-	octopusGrouping.tabsContainer.setAttribute("id", "group-tabs");
-	
+	octopusGrouping.tabsContainer.id = "group-tabs";
+	octopusGrouping.tabsContainer.className = "nav nav-tabs nav-inline";
+	octopusGrouping.tabsContainer.setAttribute('style', 'border-bottom: 0px;');
+
 	body.insertBefore(octopusGrouping.tabsContainer, dashboardTitle.nextSibling);
 
 	body.addEventListener(
@@ -157,7 +182,6 @@ function nodeInsertion(event)
 
 		// Set the group id for easier showing/hiding of group later on.
 		node.setAttribute('id', octopusGrouping.groupingId(grouping));
-
 	}
 
 }
