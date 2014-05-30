@@ -100,7 +100,10 @@ var octopusGrouping = {
 
 	addToTabsNav: function(item)
 	{
-		this.tabsContainer.appendChild(item);
+		if (document.getElementById(item.id) == null)
+		{
+			this.tabsContainer.appendChild(item);
+		}
 	},
 
 	findNodeByClassName: function(nodeSet, className)
@@ -152,6 +155,13 @@ function start()
 	var dashboardTitle = document.getElementById("title");
 	var body = document.getElementById("body");
 
+	var breadcrumbs = octopusGrouping.findNodeByClassName(body.childNodes, "title-and-breadcrumbs left");
+	if (breadcrumbs != null)
+	{
+		breadcrumbs.addEventListener(
+		"DOMNodeInserted", breadcrumbsNodeAdded );
+	}
+
 	octopusGrouping.tabsContainer = document.createElement("ul");
 	octopusGrouping.tabsContainer.id = "group-tabs";
 	octopusGrouping.tabsContainer.className = "nav nav-tabs nav-inline";
@@ -164,6 +174,20 @@ function start()
 
 	var all = octopusGrouping.createButton("All");
 	octopusGrouping.addToTabsNav(all);
+}
+
+function breadcrumbsNodeAdded(event)
+{
+	if (event.target.innerText == "Dashboard")
+	{
+		console.log("Showing tabs");
+		document.getElementById("group-tabs").style.visibility = "visible";
+	}
+	else
+	{
+		console.log("Hiding tabs");
+		document.getElementById("group-tabs").style.visibility = "collapse";
+	}
 }
 
 function nodeInsertion(event)
